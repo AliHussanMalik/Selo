@@ -7,6 +7,7 @@ const {
   StyleSheet,
   Alert,
 } = require('react-native');
+const { useSafeAreaInsets } = require('react-native-safe-area-context');
 const FlashResaleCard = require('../components/FlashResaleCard');
 const { resaleApi } = require('../api/client');
 
@@ -40,6 +41,7 @@ const MOCK_RESALES = [
 ];
 
 const ResaleMarketplaceScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [resales, setResales] = useState(MOCK_RESALES);
 
   React.useEffect(() => {
@@ -75,7 +77,7 @@ const ResaleMarketplaceScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) + 10 }]}>
       <View style={styles.header}>
         <Text style={styles.title}>⚡ Flash Resale Marketplace</Text>
         <Text style={styles.subtitle}>

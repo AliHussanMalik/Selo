@@ -42,8 +42,12 @@ const AppNavigator = () => {
         tabBarStyle: {
           backgroundColor: '#0F172A',
           borderTopColor: '#1E293B',
-          height: 60,
-          paddingBottom: 8,
+          paddingBottom: 6,
+          paddingTop: 6,
+          height: 64,
+        },
+        tabBarItemStyle: {
+          paddingBottom: 4,
         },
         tabBarActiveTintColor: '#6366F1',
         tabBarInactiveTintColor: '#64748B',
@@ -52,7 +56,7 @@ const AppNavigator = () => {
           if (route.name === 'Explore') icon = '💈';
           if (route.name === 'FlashResale') icon = '⚡';
           if (route.name === 'MyBookings') icon = '🎫';
-          return <Text style={{ fontSize: 18 }}>{icon}</Text>;
+          return <Text style={{ fontSize: 20 }}>{icon}</Text>;
         },
       })}
     >

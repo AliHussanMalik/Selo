@@ -9,6 +9,7 @@ const {
   StyleSheet,
   ActivityIndicator,
 } = require('react-native');
+const { useSafeAreaInsets } = require('react-native-safe-area-context');
 const SalonCard = require('../components/SalonCard');
 const { salonApi } = require('../api/client');
 
@@ -16,6 +17,7 @@ const CITIES = ['All', 'Lahore', 'Karachi', 'Islamabad', 'Rawalpindi'];
 const AMENITIES = ['All', 'female_only', 'wifi', 'parking', 'ac', 'prayer_room'];
 
 const ExploreScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [salons, setSalons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCity, setSelectedCity] = useState('All');
@@ -79,7 +81,7 @@ const ExploreScreen = ({ navigation }) => {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) + 10 }]}>
       <View style={styles.header}>
         <Text style={styles.title}>💈 Discover Salons</Text>
         <Text style={styles.subtitle}>Book instantly or grab flash resale slots</Text>

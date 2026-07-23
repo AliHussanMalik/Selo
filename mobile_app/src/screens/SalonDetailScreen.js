@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#090D16',
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 80,
   },
   coverImage: {
     width: '100%',

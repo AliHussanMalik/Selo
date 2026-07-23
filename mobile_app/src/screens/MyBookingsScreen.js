@@ -7,6 +7,7 @@ const {
   StyleSheet,
   Alert,
 } = require('react-native');
+const { useSafeAreaInsets } = require('react-native-safe-area-context');
 const BookingCard = require('../components/BookingCard');
 const { bookingApi } = require('../api/client');
 
@@ -32,6 +33,7 @@ const MOCK_BOOKINGS = [
 ];
 
 const MyBookingsScreen = () => {
+  const insets = useSafeAreaInsets();
   const [bookings, setBookings] = useState(MOCK_BOOKINGS);
 
   React.useEffect(() => {
@@ -86,7 +88,7 @@ const MyBookingsScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) + 10 }]}>
       <View style={styles.header}>
         <Text style={styles.title}>🎫 My Bookings & Tickets</Text>
         <Text style={styles.subtitle}>Manage active appointments or list slots for resale</Text>
