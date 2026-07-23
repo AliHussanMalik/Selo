@@ -10,6 +10,7 @@ const {
   ActivityIndicator,
 } = require('react-native');
 const SalonCard = require('../components/SalonCard');
+const { salonApi } = require('../api/client');
 
 const CITIES = ['All', 'Lahore', 'Karachi', 'Islamabad', 'Rawalpindi'];
 const AMENITIES = ['All', 'female_only', 'wifi', 'parking', 'ac', 'prayer_room'];
@@ -28,7 +29,18 @@ const ExploreScreen = ({ navigation }) => {
   const fetchSalons = async () => {
     setLoading(true);
     try {
-      // Mock data fallback if backend is offline during preview
+      const params = {};
+      if (selectedCity !== 'All') params.city = selectedCity;
+      if (selectedAmenity !== 'All') params.amenity = selectedAmenity;
+      
+      const response = await salonApi.getSalons(params);
+      if (response && response.salons && response.salons.length > 0) {
+        setSalons(response.salons);
+      } else {
+        throw new Error('Empty database list, fallback to preview mock');
+      }
+    } catch (err) {
+      console.log('Backend API offline or empty, displaying preview mock:', err.message);
       const mockSalons = [
         {
           id: '1',
@@ -49,10 +61,7 @@ const ExploreScreen = ({ navigation }) => {
           amenities: ['female_only', 'prayer_room', 'wifi', 'ac'],
         },
       ];
-
       setSalons(mockSalons);
-    } catch (err) {
-      console.error('Failed to load salons', err);
     } finally {
       setLoading(false);
     }

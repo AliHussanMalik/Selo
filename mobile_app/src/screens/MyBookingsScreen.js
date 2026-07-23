@@ -8,6 +8,7 @@ const {
   Alert,
 } = require('react-native');
 const BookingCard = require('../components/BookingCard');
+const { bookingApi } = require('../api/client');
 
 const MOCK_BOOKINGS = [
   {
@@ -32,6 +33,21 @@ const MOCK_BOOKINGS = [
 
 const MyBookingsScreen = () => {
   const [bookings, setBookings] = useState(MOCK_BOOKINGS);
+
+  React.useEffect(() => {
+    fetchMyBookings();
+  }, []);
+
+  const fetchMyBookings = async () => {
+    try {
+      const response = await bookingApi.getMyBookings();
+      if (response && response.bookings && response.bookings.length > 0) {
+        setBookings(response.bookings);
+      }
+    } catch (err) {
+      console.log('Backend API offline or unauthenticated, displaying preview bookings:', err.message);
+    }
+  };
 
   const handleResale = (booking) => {
     Alert.prompt(

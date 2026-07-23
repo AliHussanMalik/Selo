@@ -8,6 +8,7 @@ const {
   Alert,
 } = require('react-native');
 const FlashResaleCard = require('../components/FlashResaleCard');
+const { resaleApi } = require('../api/client');
 
 const MOCK_RESALES = [
   {
@@ -40,6 +41,21 @@ const MOCK_RESALES = [
 
 const ResaleMarketplaceScreen = ({ navigation }) => {
   const [resales, setResales] = useState(MOCK_RESALES);
+
+  React.useEffect(() => {
+    fetchResales();
+  }, []);
+
+  const fetchResales = async () => {
+    try {
+      const response = await resaleApi.getFlashListings();
+      if (response && response.listings && response.listings.length > 0) {
+        setResales(response.listings);
+      }
+    } catch (err) {
+      console.log('Backend API offline, displaying preview resale marketplace:', err.message);
+    }
+  };
 
   const handleBuySlot = (resale) => {
     Alert.alert(
