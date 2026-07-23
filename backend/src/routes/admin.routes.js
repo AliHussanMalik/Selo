@@ -5,12 +5,12 @@ const {
   toggleSalonVerification,
   getAllUsersAdmin,
 } = require('../controllers/admin.controller');
-const { authenticateToken } = require('../middleware/auth.middleware');
+const { authenticate } = require('../middleware/auth.middleware');
 const { requireRole } = require('../middleware/role.middleware');
 
 const router = express.Router();
 
-router.use(authenticateToken);
+router.use(authenticate);
 router.use(requireRole('admin'));
 
 router.get('/stats', getAdminStats);
