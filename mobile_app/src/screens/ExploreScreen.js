@@ -130,7 +130,7 @@ const ExploreScreen = ({ navigation }) => {
         <FlatList
           data={filteredSalons}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 100 }]}
           renderItem={({ item }) => (
             <SalonCard
               salon={item}

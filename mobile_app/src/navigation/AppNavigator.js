@@ -11,6 +11,8 @@ const MyBookingsScreen = require('../screens/MyBookingsScreen');
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+const { useSafeAreaInsets } = require('react-native-safe-area-context');
+
 const ExploreStack = () => {
   return (
     <Stack.Navigator
@@ -35,6 +37,9 @@ const ExploreStack = () => {
 };
 
 const AppNavigator = () => {
+  const insets = useSafeAreaInsets();
+  const bottomInset = Math.max(insets.bottom, 12);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -42,15 +47,16 @@ const AppNavigator = () => {
         tabBarStyle: {
           backgroundColor: '#0F172A',
           borderTopColor: '#1E293B',
-          paddingBottom: 6,
-          paddingTop: 6,
-          height: 64,
-        },
-        tabBarItemStyle: {
-          paddingBottom: 4,
+          paddingBottom: bottomInset,
+          paddingTop: 8,
+          height: 60 + bottomInset,
         },
         tabBarActiveTintColor: '#6366F1',
         tabBarInactiveTintColor: '#64748B',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+        },
         tabBarIcon: ({ focused }) => {
           let icon = '🔍';
           if (route.name === 'Explore') icon = '💈';

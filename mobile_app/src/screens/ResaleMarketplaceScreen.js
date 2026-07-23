@@ -88,7 +88,7 @@ const ResaleMarketplaceScreen = ({ navigation }) => {
       <FlatList
         data={resales}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 100 }]}
         renderItem={({ item }) => (
           <FlashResaleCard resale={item} onBuy={handleBuySlot} />
         )}

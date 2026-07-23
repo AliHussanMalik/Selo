@@ -97,7 +97,7 @@ const MyBookingsScreen = () => {
       <FlatList
         data={bookings}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 100 }]}
         renderItem={({ item }) => (
           <BookingCard
             booking={item}
