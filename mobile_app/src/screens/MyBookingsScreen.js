@@ -35,19 +35,23 @@ const MOCK_BOOKINGS = [
 const MyBookingsScreen = () => {
   const insets = useSafeAreaInsets();
   const [bookings, setBookings] = useState(MOCK_BOOKINGS);
+  const [refreshing, setRefreshing] = useState(false);
 
   React.useEffect(() => {
     fetchMyBookings();
   }, []);
 
   const fetchMyBookings = async () => {
+    setRefreshing(true);
     try {
       const response = await bookingApi.getMyBookings();
-      if (response && response.bookings && response.bookings.length > 0) {
+      if (response && response.bookings) {
         setBookings(response.bookings);
       }
     } catch (err) {
       console.log('Backend API offline or unauthenticated, displaying preview bookings:', err.message);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -62,7 +66,7 @@ const MyBookingsScreen = () => {
           onPress: (price) => {
             Alert.alert(
               '🎉 Listed on Flash Marketplace!',
-              `Your ${booking.service_name} slot is now live for sale at PKR ${price || booking.total_price}.`
+              `Your ${booking.service_name || 'appointment'} slot is now live for sale at PKR ${price || booking.total_price}.`
             );
           },
         },
@@ -78,10 +82,16 @@ const MyBookingsScreen = () => {
       {
         text: 'Yes, Cancel',
         style: 'destructive',
-        onPress: () => {
-          setBookings((prev) =>
-            prev.map((b) => (b.id === bookingId ? { ...b, status: 'cancelled' } : b))
-          );
+        onPress: async () => {
+          try {
+            await bookingApi.cancelBooking(bookingId);
+            fetchMyBookings();
+            Alert.alert('Booking Cancelled', 'Appointment cancelled successfully.');
+          } catch (err) {
+            setBookings((prev) =>
+              prev.map((b) => (b.id === bookingId ? { ...b, status: 'cancelled' } : b))
+            );
+          }
         },
       },
     ]);
@@ -97,6 +107,8 @@ const MyBookingsScreen = () => {
       <FlatList
         data={bookings}
         keyExtractor={(item) => item.id}
+        refreshing={refreshing}
+        onRefresh={fetchMyBookings}
         contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + 100 }]}
         renderItem={({ item }) => (
           <BookingCard

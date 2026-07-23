@@ -161,11 +161,18 @@ async function handleLogin(e) {
 
     updateUserUI();
     hideModal(authModal);
-    alert(`Welcome back, ${currentUser.full_name}! (${currentUser.role})`);
     
     if (currentUser.role === 'admin') {
+      alert(`👑 Welcome Super Admin, ${currentUser.full_name}!`);
       document.querySelector('[data-view="super-admin-view"]').click();
+      loadSuperAdminView();
+    } else if (currentUser.role === 'salon_owner') {
+      alert(`💈 Welcome Partner, ${currentUser.full_name}!`);
+      document.querySelector('[data-view="salon-owner-view"]').click();
+      loadSalonOwnerView();
     } else {
+      alert(`👤 Logged in as Customer (${currentUser.full_name}).\nNote: Web portal is for Salon Owners & Admins. For client appointment bookings, please use the Selo Mobile App!`);
+      document.querySelector('[data-view="salon-owner-view"]').click();
       loadSalonOwnerView();
     }
   } catch (err) {

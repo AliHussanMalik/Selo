@@ -8,11 +8,12 @@ const {
   createBookingSchema,
 } = require('../controllers/booking.controller');
 const { authenticate } = require('../middleware/auth.middleware');
+const { requireRole } = require('../middleware/role.middleware');
 const { validate } = require('../middleware/validate.middleware');
 
 router.use(authenticate);
 
-router.post('/', validate(createBookingSchema), createBooking);
+router.post('/', requireRole('customer', 'admin'), validate(createBookingSchema), createBooking);
 router.get('/my', getMyBookings);
 router.get('/:id', getBookingById);
 router.patch('/:id/cancel', cancelBooking);
