@@ -38,10 +38,12 @@ const toggleSalonVerification = async (req, res) => {
     return res.status(404).json({ error: 'Salon not found' });
   }
 
-  const [updatedSalon] = await db('salons')
+  const newStatus = !salon.is_verified;
+  await db('salons')
     .where({ id })
-    .update({ is_verified: !salon.is_verified })
-    .returning('*');
+    .update({ is_verified: newStatus, updated_at: db.fn.now() });
+
+  const updatedSalon = await db('salons').where({ id }).first();
 
   return res.json({
     message: `Salon ${updatedSalon.is_verified ? 'verified' : 'unverified'} successfully`,

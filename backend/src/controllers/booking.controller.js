@@ -149,14 +149,15 @@ const cancelBooking = async (req, res) => {
     return res.status(400).json({ error: `Cannot cancel booking with status: ${booking.status}` });
   }
 
-  const [updated] = await db('bookings')
+  await db('bookings')
     .where({ id })
-    .update({ status: 'cancelled', updated_at: db.fn.now() })
-    .returning('*');
+    .update({ status: 'cancelled', updated_at: db.fn.now() });
+
+  const updatedBooking = await db('bookings').where({ id }).first();
 
   return res.json({
     message: 'Booking cancelled successfully',
-    booking: updated,
+    booking: updatedBooking,
   });
 };
 
