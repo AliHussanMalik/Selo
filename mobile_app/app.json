@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Selo",
+    "slug": "selo-mobile",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {},
+    "extra": {
+      "eas": {
+        "projectId": "b2812c41-08c5-4f6c-b458-7f892ec7aec5"
+      }
+    }
+  }
+}
