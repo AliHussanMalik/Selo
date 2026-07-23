@@ -1,4 +1,15 @@
-const BASE_URL = 'http://localhost:5000/api';
+import Constants from 'expo-constants';
+
+const getBaseUrl = () => {
+  const hostUri = Constants.expoConfig?.hostUri || Constants.manifest?.debuggerHost || Constants.manifest2?.extra?.expoGo?.developer?.inputs?.['host-type'];
+  if (hostUri) {
+    const ip = hostUri.split(':')[0];
+    if (ip) return `http://${ip}:5000/api`;
+  }
+  return 'http://192.168.1.6:5000/api';
+};
+
+const BASE_URL = getBaseUrl();
 
 let authToken = null;
 
