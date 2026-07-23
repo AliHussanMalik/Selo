@@ -42,29 +42,22 @@ const createServiceSchema = z.object({
 const getAllSalons = async (req, res) => {
   const { city, amenity, search } = req.query;
 
-  let query = db('salons')
-    .select(
-      'salons.*',
-      db.raw("COALESCE(json_agg(DISTINCT salon_amenities.amenity) FILTER (WHERE salon_amenities.amenity IS NOT NULL), '[]') as amenities")
-    )
-    .leftJoin('salon_amenities', 'salons.id', 'salon_amenities.salon_id')
-    .where('salons.is_active', true)
-    .groupBy('salons.id');
+  let query = db('salons').where('is_active', true);
 
   if (city) {
-    query = query.whereILike('salons.city', `%${city}%`);
+    query = query.where('city', 'like', `%${city}%`);
   }
 
   if (search) {
     query = query.where((builder) => {
       builder
-        .whereILike('salons.name', `%${search}%`)
-        .orWhereILike('salons.address', `%${search}%`);
+        .where('name', 'like', `%${search}%`)
+        .orWhere('address', 'like', `%${search}%`);
     });
   }
 
   if (amenity) {
-    query = query.whereIn('salons.id', function () {
+    query = query.whereIn('id', function () {
       this.select('salon_id')
         .from('salon_amenities')
         .where('amenity', amenity);
@@ -72,7 +65,24 @@ const getAllSalons = async (req, res) => {
   }
 
   const salons = await query;
-  return res.json({ salons });
+  const salonIds = salons.map((s) => s.id);
+
+  let amenitiesMap = {};
+  if (salonIds.length > 0) {
+    const amenities = await db('salon_amenities').whereIn('salon_id', salonIds);
+    amenitiesMap = amenities.reduce((acc, row) => {
+      if (!acc[row.salon_id]) acc[row.salon_id] = [];
+      acc[row.salon_id].push(row.amenity);
+      return acc;
+    }, {});
+  }
+
+  const enrichedSalons = salons.map((s) => ({
+    ...s,
+    amenities: amenitiesMap[s.id] || [],
+  }));
+
+  return res.json({ salons: enrichedSalons });
 };
 
 const getSalonById = async (req, res) => {

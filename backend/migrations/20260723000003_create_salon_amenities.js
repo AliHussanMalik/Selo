@@ -3,8 +3,10 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
+  const isPg = knex.client.config.client === 'pg';
   return knex.schema.createTable('salon_amenities', (table) => {
-    table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
+    const col = table.uuid('id').primary();
+    if (isPg) col.defaultTo(knex.raw('gen_random_uuid()'));
     table
       .uuid('salon_id')
       .notNullable()
@@ -24,7 +26,7 @@ exports.up = function (knex) {
           'female_only',
         ],
         {
-          useNative: true,
+          useNative: isPg,
           enumName: 'amenity_enum',
         }
       )

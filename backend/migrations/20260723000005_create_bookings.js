@@ -3,8 +3,10 @@
  * @returns { Promise<void> }
  */
 exports.up = async function (knex) {
+  const isPg = knex.client.config.client === 'pg';
   await knex.schema.createTable('bookings', (table) => {
-    table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
+    const col = table.uuid('id').primary();
+    if (isPg) col.defaultTo(knex.raw('gen_random_uuid()'));
     table
       .uuid('customer_id')
       .notNullable()
@@ -44,7 +46,7 @@ exports.up = async function (knex) {
           'resold',
         ],
         {
-          useNative: true,
+          useNative: isPg,
           enumName: 'booking_status_enum',
         }
       )

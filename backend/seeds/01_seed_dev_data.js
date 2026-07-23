@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { randomUUID } = require('crypto');
 
 /**
  * @param { import("knex").Knex } knex
@@ -18,136 +19,140 @@ exports.seed = async function (knex) {
   const passwordHash = await bcrypt.hash('password123', 10);
 
   // 2. Users
-  const [owner] = await knex('users')
-    .insert({
-      full_name: 'Tariq Mahmood',
-      email: 'owner@selo.com',
-      phone: '+923001234567',
-      password_hash: passwordHash,
-      role: 'salon_owner',
-      avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
-    })
-    .returning('*');
+  const ownerId = randomUUID();
+  const customer1Id = randomUUID();
+  const customer2Id = randomUUID();
 
-  const [customer1] = await knex('users')
-    .insert({
-      full_name: 'Sara Khan',
-      email: 'sara@selo.com',
-      phone: '+923007654321',
-      password_hash: passwordHash,
-      role: 'customer',
-      avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
-    })
-    .returning('*');
+  await knex('users').insert({
+    id: ownerId,
+    full_name: 'Tariq Mahmood',
+    email: 'owner@selo.com',
+    phone: '+923001234567',
+    password_hash: passwordHash,
+    role: 'salon_owner',
+    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
+  });
 
-  const [customer2] = await knex('users')
-    .insert({
-      full_name: 'Ali Raza',
-      email: 'ali@selo.com',
-      phone: '+923008889999',
-      password_hash: passwordHash,
-      role: 'customer',
-    })
-    .returning('*');
+  await knex('users').insert({
+    id: customer1Id,
+    full_name: 'Sara Khan',
+    email: 'sara@selo.com',
+    phone: '+923007654321',
+    password_hash: passwordHash,
+    role: 'customer',
+    avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
+  });
+
+  await knex('users').insert({
+    id: customer2Id,
+    full_name: 'Ali Raza',
+    email: 'ali@selo.com',
+    phone: '+923008889999',
+    password_hash: passwordHash,
+    role: 'customer',
+  });
 
   // 3. Salons
-  const [salon1] = await knex('salons')
-    .insert({
-      owner_id: owner.id,
-      name: 'Royal Cut & Styling Studio',
-      description: 'Premium luxury grooming and hair salon in the heart of Gulberg, Lahore.',
-      address: 'Block MM Alam Road, Gulberg III',
-      city: 'Lahore',
-      latitude: 31.5204,
-      longitude: 74.3587,
-      cover_image_url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035',
-      is_verified: true,
-    })
-    .returning('*');
+  const salon1Id = randomUUID();
+  const salon2Id = randomUUID();
 
-  const [salon2] = await knex('salons')
-    .insert({
-      owner_id: owner.id,
-      name: 'Glamour Lounge & Spa',
-      description: 'Top-tier beauty spa and bridal lounge in F-7 Markaz.',
-      address: 'F-7 Markaz, Main Boulevard',
-      city: 'Islamabad',
-      latitude: 33.7294,
-      longitude: 73.0551,
-      cover_image_url: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f',
-      is_verified: true,
-    })
-    .returning('*');
+  await knex('salons').insert({
+    id: salon1Id,
+    owner_id: ownerId,
+    name: 'Royal Cut & Styling Studio',
+    description: 'Premium luxury grooming and hair salon in the heart of Gulberg, Lahore.',
+    address: 'Block MM Alam Road, Gulberg III',
+    city: 'Lahore',
+    latitude: 31.5204,
+    longitude: 74.3587,
+    cover_image_url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035',
+    is_verified: true,
+  });
+
+  await knex('salons').insert({
+    id: salon2Id,
+    owner_id: ownerId,
+    name: 'Glamour Lounge & Spa',
+    description: 'Top-tier beauty spa and bridal lounge in F-7 Markaz.',
+    address: 'F-7 Markaz, Main Boulevard',
+    city: 'Islamabad',
+    latitude: 33.7294,
+    longitude: 73.0551,
+    cover_image_url: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f',
+    is_verified: true,
+  });
 
   // 4. Amenities
   await knex('salon_amenities').insert([
-    { salon_id: salon1.id, amenity: 'wifi' },
-    { salon_id: salon1.id, amenity: 'parking' },
-    { salon_id: salon1.id, amenity: 'ac' },
-    { salon_id: salon1.id, amenity: 'refreshments' },
-    { salon_id: salon2.id, amenity: 'wifi' },
-    { salon_id: salon2.id, amenity: 'ac' },
-    { salon_id: salon2.id, amenity: 'female_only' },
-    { salon_id: salon2.id, amenity: 'prayer_room' },
+    { id: randomUUID(), salon_id: salon1Id, amenity: 'wifi' },
+    { id: randomUUID(), salon_id: salon1Id, amenity: 'parking' },
+    { id: randomUUID(), salon_id: salon1Id, amenity: 'ac' },
+    { id: randomUUID(), salon_id: salon1Id, amenity: 'refreshments' },
+    { id: randomUUID(), salon_id: salon2Id, amenity: 'wifi' },
+    { id: randomUUID(), salon_id: salon2Id, amenity: 'ac' },
+    { id: randomUUID(), salon_id: salon2Id, amenity: 'female_only' },
+    { id: randomUUID(), salon_id: salon2Id, amenity: 'prayer_room' },
   ]);
 
   // 5. Services
-  const [service1] = await knex('services')
-    .insert({
-      salon_id: salon1.id,
-      name: 'Signature Haircut & Beard Sculpting',
-      description: 'Full consultation, precision haircut, hot towel beard trim, and styling.',
-      duration_minutes: 45,
-      price: 2500.00,
-      category: 'haircut',
-    })
-    .returning('*');
+  const service1Id = randomUUID();
+  const service2Id = randomUUID();
+  const service3Id = randomUUID();
 
-  const [service2] = await knex('services')
-    .insert({
-      salon_id: salon1.id,
-      name: 'Charcoal Facial Treatment',
-      description: 'Deep cleansing and exfoliating facial for radiant skin.',
-      duration_minutes: 60,
-      price: 4500.00,
-      category: 'treatment',
-    })
-    .returning('*');
+  await knex('services').insert({
+    id: service1Id,
+    salon_id: salon1Id,
+    name: 'Signature Haircut & Beard Sculpting',
+    description: 'Full consultation, precision haircut, hot towel beard trim, and styling.',
+    duration_minutes: 45,
+    price: 2500.00,
+    category: 'haircut',
+  });
 
-  const [service3] = await knex('services')
-    .insert({
-      salon_id: salon2.id,
-      name: 'Bridal Spa & Glow Polish',
-      description: 'Luxury full body skin treatment and glow session.',
-      duration_minutes: 90,
-      price: 12000.00,
-      category: 'treatment',
-    })
-    .returning('*');
+  await knex('services').insert({
+    id: service2Id,
+    salon_id: salon1Id,
+    name: 'Charcoal Facial Treatment',
+    description: 'Deep cleansing and exfoliating facial for radiant skin.',
+    duration_minutes: 60,
+    price: 4500.00,
+    category: 'treatment',
+  });
+
+  await knex('services').insert({
+    id: service3Id,
+    salon_id: salon2Id,
+    name: 'Bridal Spa & Glow Polish',
+    description: 'Luxury full body skin treatment and glow session.',
+    duration_minutes: 90,
+    price: 12000.00,
+    category: 'treatment',
+  });
 
   // 6. Bookings
   const today = new Date().toISOString().split('T')[0];
+  const booking1Id = randomUUID();
 
-  const [booking1] = await knex('bookings')
-    .insert({
-      customer_id: customer1.id,
-      salon_id: salon1.id,
-      service_id: service1.id,
-      scheduled_date: today,
-      start_time: '14:00:00',
-      end_time: '14:45:00',
-      status: 'confirmed',
-      total_price: service1.price,
-      notes: 'VIP customer',
-    })
-    .returning('*');
+  await knex('bookings').insert({
+    id: booking1Id,
+    customer_id: customer1Id,
+    salon_id: salon1Id,
+    service_id: service1Id,
+    scheduled_date: today,
+    start_time: '14:00:00',
+    end_time: '14:45:00',
+    status: 'confirmed',
+    total_price: 2500.00,
+    notes: 'VIP customer',
+  });
 
   // 7. Slot Resale Transaction
   const expiresAt = new Date(`${today}T14:00:00Z`);
 
   await knex('slot_resale_transactions').insert({
-    booking_id: booking1.id,
-    seller_id: customer1.id,
+    id: randomUUID(),
+    booking_id: booking1Id,
+    seller_id: customer1Id,
     listing_price: 2000.00, // Discounted from 2500
     original_price: 2500.00,
     status: 'listed',
