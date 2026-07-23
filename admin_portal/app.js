@@ -208,9 +208,18 @@ async function handleRegister(e) {
 function handleLogout() {
   authToken = null;
   currentUser = null;
+  activeSalonId = null;
   localStorage.removeItem('selo_token');
+  
   updateUserUI();
-  loadSalonOwnerView();
+
+  const detailsSection = document.getElementById('selectedSalonDetails');
+  if (detailsSection) detailsSection.classList.add('hidden');
+
+  const defaultNavBtn = document.querySelector('[data-view="salon-owner-view"]');
+  if (defaultNavBtn) defaultNavBtn.click();
+
+  alert('👋 You have logged out successfully.');
 }
 
 function updateUserUI() {

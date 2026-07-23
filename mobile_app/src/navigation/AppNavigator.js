@@ -7,6 +7,7 @@ const ExploreScreen = require('../screens/ExploreScreen');
 const SalonDetailScreen = require('../screens/SalonDetailScreen');
 const ResaleMarketplaceScreen = require('../screens/ResaleMarketplaceScreen');
 const MyBookingsScreen = require('../screens/MyBookingsScreen');
+const AuthScreen = require('../screens/AuthScreen');
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -62,6 +63,7 @@ const AppNavigator = () => {
           if (route.name === 'Explore') icon = '💈';
           if (route.name === 'FlashResale') icon = '⚡';
           if (route.name === 'MyBookings') icon = '🎫';
+          if (route.name === 'Account') icon = '👤';
           return <Text style={{ fontSize: 20 }}>{icon}</Text>;
         },
       })}
@@ -69,6 +71,7 @@ const AppNavigator = () => {
       <Tab.Screen name="Explore" component={ExploreStack} options={{ title: 'Explore' }} />
       <Tab.Screen name="FlashResale" component={ResaleMarketplaceScreen} options={{ title: 'Flash Resale' }} />
       <Tab.Screen name="MyBookings" component={MyBookingsScreen} options={{ title: 'My Tickets' }} />
+      <Tab.Screen name="Account" component={AuthScreen} options={{ title: 'Account' }} />
     </Tab.Navigator>
   );
 };
