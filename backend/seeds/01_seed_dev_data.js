@@ -19,9 +19,20 @@ exports.seed = async function (knex) {
   const passwordHash = await bcrypt.hash('password123', 10);
 
   // 2. Users
+  const adminId = randomUUID();
   const ownerId = randomUUID();
   const customer1Id = randomUUID();
   const customer2Id = randomUUID();
+
+  await knex('users').insert({
+    id: adminId,
+    full_name: 'Super Admin',
+    email: 'admin@selo.com',
+    phone: '+923000000000',
+    password_hash: passwordHash,
+    role: 'admin',
+    avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e',
+  });
 
   await knex('users').insert({
     id: ownerId,

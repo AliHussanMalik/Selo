@@ -4,11 +4,13 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 require('express-async-errors');
 
+const path = require('path');
 const config = require('./config/env');
 const authRoutes = require('./routes/auth.routes');
 const salonRoutes = require('./routes/salon.routes');
 const bookingRoutes = require('./routes/booking.routes');
 const resaleRoutes = require('./routes/resale.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 const app = express();
 
@@ -37,16 +39,18 @@ if (config.env !== 'test') {
   app.use(morgan('dev'));
 }
 
-// Health Check
+// Health Check & Web Admin Portal
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'Selo API', timestamp: new Date() });
 });
+app.use('/admin', express.static(path.join(__dirname, '../../admin_portal')));
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/salons', salonRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/resale', resaleRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 Handler
 app.use((req, res) => {
