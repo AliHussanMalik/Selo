@@ -1,12 +1,21 @@
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 const getBaseUrl = () => {
-  const hostUri = Constants.expoConfig?.hostUri || Constants.manifest?.debuggerHost || Constants.manifest2?.extra?.expoGo?.developer?.inputs?.['host-type'];
+  let hostUri =
+    Constants.expoConfig?.hostUri ||
+    Constants.manifest?.debuggerHost ||
+    Constants.manifest2?.extra?.expoGo?.developer?.inputs?.['host-type'];
+
+  if (Platform.OS === 'android' && hostUri) {
+    hostUri = hostUri.replace('localhost', '[IP_ADDRESS]');
+  }
+
   if (hostUri) {
     const ip = hostUri.split(':')[0];
     if (ip) return `http://${ip}:5000/api`;
   }
-  return 'http://192.168.1.6:5000/api';
+  return 'http://[IP_ADDRESS]/api';
 };
 
 const BASE_URL = getBaseUrl();

@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllSalons,
   getSalonById,
+  getMySalons,
   createSalon,
   addService,
   getAvailableSlots,
@@ -14,6 +15,7 @@ const { requireRole } = require('../middleware/role.middleware');
 const { validate } = require('../middleware/validate.middleware');
 
 router.get('/', getAllSalons);
+router.get('/my', authenticate, requireRole('salon_owner', 'admin'), getMySalons);
 router.get('/:id', getSalonById);
 router.get('/:id/slots', getAvailableSlots);
 

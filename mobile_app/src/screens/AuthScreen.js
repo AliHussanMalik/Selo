@@ -158,7 +158,7 @@ const AuthScreen = ({ navigation }) => {
       <View style={styles.formCard}>
         {!isLogin && (
           <>
-            <Text style={styles.label}>Full Name</label>
+            <Text style={styles.label}>Full Name</Text>
             <TextInput
               style={styles.input}
               placeholder="e.g. Sara Khan"
@@ -167,7 +167,7 @@ const AuthScreen = ({ navigation }) => {
               onChangeText={setFullName}
             />
 
-            <Text style={styles.label}>Phone Number</label>
+            <Text style={styles.label}>Phone Number</Text>
             <TextInput
               style={styles.input}
               placeholder="+923001234567"
@@ -177,7 +177,7 @@ const AuthScreen = ({ navigation }) => {
               keyboardType="phone-pad"
             />
 
-            <Text style={styles.label}>Account Role</label>
+            <Text style={styles.label}>Account Role</Text>
             <View style={styles.rolePickerRow}>
               <TouchableOpacity
                 style={[styles.roleChip, role === 'customer' && styles.activeRoleChip]}

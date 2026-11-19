@@ -36,7 +36,7 @@ function setupEventListeners() {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-      
+
       const targetBtn = e.currentTarget;
       targetBtn.classList.add('active');
       const viewId = targetBtn.dataset.view;
@@ -102,7 +102,7 @@ function setupEventListeners() {
 }
 
 // Global Auth Quick Helper
-window.fillAuth = function(email, password) {
+window.fillAuth = function (email, password) {
   document.getElementById('loginEmail').value = email;
   document.getElementById('loginPassword').value = password;
 };
@@ -161,7 +161,7 @@ async function handleLogin(e) {
 
     updateUserUI();
     hideModal(authModal);
-    
+
     if (currentUser.role === 'admin') {
       alert(`👑 Welcome Super Admin, ${currentUser.full_name}!`);
       document.querySelector('[data-view="super-admin-view"]').click();
@@ -217,7 +217,7 @@ function handleLogout() {
   currentUser = null;
   activeSalonId = null;
   localStorage.removeItem('selo_token');
-  
+
   updateUserUI();
 
   const detailsSection = document.getElementById('selectedSalonDetails');
@@ -246,8 +246,17 @@ async function loadSalonOwnerView() {
   const container = document.getElementById('ownerSalonsContainer');
   container.innerHTML = '<p class="text-muted">Loading registered salons...</p>';
 
+  if (!currentUser) {
+    container.innerHTML = `
+      <div class="section-card flex-1">
+        <p class="text-muted">Please <strong>Sign In</strong> as a Salon Owner to view and manage your store catalog.</p>
+      </div>`;
+    document.getElementById('selectedSalonDetails').classList.add('hidden');
+    return;
+  }
+
   try {
-    const data = await apiFetch('/salons');
+    const data = await apiFetch('/salons/my');
     const salons = data.salons || [];
 
     if (salons.length === 0) {
@@ -285,7 +294,7 @@ async function loadSalonOwnerView() {
 async function selectSalon(salonId) {
   activeSalonId = salonId;
   document.querySelectorAll('.salon-card-item').forEach(c => c.classList.remove('selected'));
-  
+
   try {
     const data = await apiFetch(`/salons/${salonId}`);
     const salon = data.salon;
@@ -437,7 +446,7 @@ async function loadSuperAdminView() {
   }
 }
 
-window.toggleVerify = async function(salonId) {
+window.toggleVerify = async function (salonId) {
   try {
     const data = await apiFetch(`/admin/salons/${salonId}/verify`, { method: 'PATCH' });
     alert(data.message);

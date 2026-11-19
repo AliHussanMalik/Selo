@@ -85,6 +85,37 @@ const getAllSalons = async (req, res) => {
   return res.json({ salons: enrichedSalons });
 };
 
+const getMySalons = async (req, res) => {
+  const owner_id = req.user.id;
+
+  let salons;
+  if (req.user.role === 'admin') {
+    salons = await db('salons').where('is_active', true);
+  }
+  else {
+    salons = await db('salons').where({ owner_id, is_active: true });
+  }
+
+  const salonIds = salons.map((s) => s.id);
+
+  let amenitiesMap = {};
+  if (salonIds.length > 0) {
+    const amenities = await db('salon_amenities').whereIn('salon_id', salonIds);
+    amenitiesMap = amenities.reduce((acc, row) => {
+      if (!acc[row.salon_id]) acc[row.salon_id] = [];
+      acc[row.salon_id].push(row.amenity);
+      return acc;
+    }, {});
+  }
+
+  const enrichedSalons = salons.map((s) => ({
+    ...s,
+    amenities: amenitiesMap[s.id] || [],
+  }));
+
+  return res.json({ salons: enrichedSalons });
+}
+
 const getSalonById = async (req, res) => {
   const { id } = req.params;
 
@@ -227,6 +258,7 @@ const getAvailableSlots = async (req, res) => {
 module.exports = {
   getAllSalons,
   getSalonById,
+  getMySalons,
   createSalon,
   addService,
   getAvailableSlots,
